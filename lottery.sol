@@ -138,6 +138,13 @@ contract lottery{
         emit buy_ticket(_tickets, msg.sender);
     }
 
+    //Get tickets bought by participant
+    function MyTickets() public view returns(uint[] memory){
+        return idParticipantTickets[msg.sender];
+    }
+
+    
+
 
 
 
