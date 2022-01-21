@@ -21,7 +21,7 @@ contract lottery{
     //Number of tokens
     uint public created_tokens = 700000;
 
-    event BuyTokens(uint, address);
+    event tokens_bought(uint, address);
     
     //Constructor 
     constructor() public {
@@ -70,7 +70,7 @@ contract lottery{
         token.transfer(msg.sender, _numTokens);
 
         //Event
-        emit BuyTokens(_numTokens, msg.sender);
+        emit tokens_bought(_numTokens, msg.sender);
 
     }
 
