@@ -109,6 +109,7 @@ contract lottery{
     //Events
     event buy_ticket(uint, address);
     event winner_ticket(uint);
+    event refunded_tokens(uint, address);
 
     //Buy lottery ticket
     function BuyTicket(uint _tickets) public{
@@ -164,7 +165,22 @@ contract lottery{
         token.transfer_lottery(msg.sender, winner_address, Jackpot());
     }
 
+    //Exchange tokens for ETH (refund or winner claiming prize)
+    function GetEth(uint _numTokens) public payable returns(uint){
+        //_numTokens must be > 0
+        require(_numTokens > 0, "You need an amount of tokens greater than 0");
 
+        //Participant must have that amount of tokens
+        require(_numTokens >= MyTokens(), "Not enough tokens in your wallet.");
+
+        //Participant returns tokens
+        //Lottery pays returned tokens
+        token.transfer_lottery(msg.sender, thisContract, _numTokens);
+        msg.sender.transfer(GetTokenPrice(_numTokens));
+
+        //Event
+        emit refunded_tokens(_numTokens, msg.sender);
+    }
 
 
 
