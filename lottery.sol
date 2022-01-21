@@ -94,11 +94,11 @@ contract lottery{
     //Ticket price in tokens
     uint public ticketPrice = 5; 
 
-    //Ticket numbers -> participants
+    //Participants -> Ticket numbers
     mapping(address => uint[]) idParticipantTickets;
 
-    //Winner
-    mapping(uint => address) winner;
+    //Ticket numbers -> participants
+    mapping(uint => address) ticketWho;
 
     //Random number
     uint randNonce = 0;
@@ -107,10 +107,36 @@ contract lottery{
     uint[] tickets;
 
     //Events
-    event buy_ticket(uint);
+    event buy_ticket(uint, address);
     event winner_ticket(uint);
 
-    
+    //Buy lottery ticket
+    function BuyTicket(uint _tickets) public{
+        //Get total price
+        uint total_price = _tickets.mul(ticketPrice);
+
+        //Check amount of tokens
+        require(total_price <= MyTokens(), "You need to buy more tokens first!.");
+
+        //Transfer tokens to owner (owner is the jackpot)
+        token.transfer_lottery(msg.sender, owner, total_price);
+
+        //Assign a random ticket number to buyer
+        for(uint i=0; i < _tickets; i++){
+            /*
+                Take current time, msg.sender and a nonce o gnerate a random number,
+                convert to hash and then to uint. %10000 to take only last 4 numbers (0-9999).
+            */
+            uint random = uint(keccak256(abi.encodePacked(now, msg.sender, randNonce))) % 10000;
+
+            //Save tickets data
+            idParticipantTickets[msg.sender].push(random);
+            ticketWho[random] = msg.sender;
+        }        
+
+        //Event
+        emit buy_ticket(_tickets, msg.sender);
+    }
 
 
 
