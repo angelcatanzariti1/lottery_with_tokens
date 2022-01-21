@@ -67,8 +67,15 @@ contract lottery{
         //Transfer tokens to buyer
         token.transfer(msg.sender, _numTokens);
 
+        /*
+            TO DO: emit event
+        */
+
     }
 
-
+    //Get number of available tokens in contract
+    function AvailableTokens() public view returns(uint){
+        return token.balanceOf(thisContract);
+    }
 
 }
