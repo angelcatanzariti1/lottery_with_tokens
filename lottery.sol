@@ -20,6 +20,8 @@ contract lottery{
 
     //Number of tokens
     uint public created_tokens = 700000;
+
+    event BuyTokens(uint, address);
     
     //Constructor 
     constructor() public {
@@ -67,9 +69,8 @@ contract lottery{
         //Transfer tokens to buyer
         token.transfer(msg.sender, _numTokens);
 
-        /*
-            TO DO: emit event
-        */
+        //Event
+        emit BuyTokens(_numTokens, msg.sender);
 
     }
 
@@ -87,6 +88,31 @@ contract lottery{
     function MyTokens() public view returns(uint){
         return token.balanceOf(msg.sender);
     }
+
+    // --------------------------------- LOTTERY ---------------------------------------
+
+    //Ticket price in tokens
+    uint public ticketPrice = 5; 
+
+    //Ticket numbers -> participants
+    mapping(address => uint[]) idParticipantTickets;
+
+    //Winner
+    mapping(uint => address) winner;
+
+    //Random number
+    uint randNonce = 0;
+
+    //Generated tickets
+    uint[] tickets;
+
+    //Events
+    event buy_ticket(uint);
+    event winner_ticket(uint);
+
+    
+
+
 
 
 
