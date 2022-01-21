@@ -78,11 +78,11 @@ contract lottery{
         return token.balanceOf(thisContract);
     }
 
-    //Get the balance of tokens in the lottery pool
-    function Pool() public view returns(uint){
+    //Get the balance of tokens in the lottery jackpot
+    function Jackpot() public view returns(uint){
         return token.balanceOf(owner);
     }
 
-    
+
 
 }
