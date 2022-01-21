@@ -30,9 +30,45 @@ contract lottery{
 
     // --------------------------------- TOKEN MANAGEMENT ---------------------------------------
 
-    //Token price
-    function TokenPrice(uint _numTokens) internal pure returns(uint){
+    //Restrict to contract's owner 
+    modifier OwnerOnly(address _address) {
+        require(_address == owner, "This function is restricted to the contract's owner.");
+        _;
+    }
+    
+    //Get token price
+    function GetTokenPrice(uint _numTokens) internal pure returns(uint){
         return _numTokens.mul(1 ether);
     }
     
+    //Token creation
+    function CreateTokens(uint _numTokens) public OwnerOnly(msg.sender){
+        token.increaseTotalSupply(_numTokens);
+    }
+
+    //Buy tokens
+    function BuyTokens(uint _numTokens) public payable{
+        //Get contract's token balance
+        uint balance = AvailableTokens();
+
+        //Check availability of tokens
+        require(_numTokens <= balance, "Not enough tokensavailable. Buy less tokens.");
+        
+        //get tokens price
+        uint price = GetTokenPrice(_numTokens);
+
+        //Check amount of eth payed
+        require(msg.value >= price, "Buy less tokens or pay more ETH :)");
+
+        //Refund change
+        uint returnValue = msg.value.sub(price);
+        msg.sender.transfer(returnValue);
+
+        //Transfer tokens to buyer
+        token.transfer(msg.sender, _numTokens);
+
+    }
+
+
+
 }
