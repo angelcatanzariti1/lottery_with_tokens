@@ -130,6 +130,7 @@ contract lottery{
             uint random = uint(keccak256(abi.encodePacked(now, msg.sender, randNonce))) % 10000;
 
             //Save tickets data
+            tickets.push(random);
             idParticipantTickets[msg.sender].push(random);
             ticketWho[random] = msg.sender;
         }        
@@ -143,7 +144,27 @@ contract lottery{
         return idParticipantTickets[msg.sender];
     }
 
-    
+    //Pick a random winner
+    function WinnerPicker() public OwnerOnly(msg.sender){
+        //Check if tickets were bought
+        require(tickets.length > 0, "No tickets were bought.");
+
+        //Take a random number from bought tickets
+        uint length = tickets.length;
+        uint array_position = uint(uint(keccak256(abi.encodePacked(now))) % length);
+        uint winner = tickets[array_position];
+
+        //Event
+        emit winner_ticket(winner);
+
+        //Get winner's address
+        address winner_address = ticketWho[winner];
+
+        //Send tokens jackpot to winner
+        token.transfer_lottery(msg.sender, winner_address, Jackpot());
+    }
+
+
 
 
 
