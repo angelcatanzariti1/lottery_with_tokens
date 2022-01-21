@@ -83,6 +83,11 @@ contract lottery{
         return token.balanceOf(owner);
     }
 
+    //Let participants know how many tokens they have
+    function MyTokens() public view returns(uint){
+        return token.balanceOf(msg.sender);
+    }
+
 
 
 }
